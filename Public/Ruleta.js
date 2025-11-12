@@ -276,13 +276,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => {
                 const signo = data.gananciaNeta >= 0 ? '+' : '';
-                statusText.textContent = ` GANADOR: ${numeroGanador} (${data.resultado.color}). Neto: ${signo}$${Math.abs(data.gananciaNeta).toLocaleString('es-CL')}`;
+                statusText.textContent = ` GANADOR: ${numeroGanador} (${data.resultado.color}). ${signo}$${Math.abs(data.gananciaNeta).toLocaleString('es-CL')}`;
                 statusText.style.color = data.gananciaNeta >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
 
 
                 actualizarHistorial(data);
 
                 setTimeout(() => {
+                    ruletaImg.style.transition = 'none';
+                    ruletaImg.style.transform = `rotate(${targetGrados}deg)`;
+                    
                     limpiarApuestasVisuales();
                     spinButton.disabled = false;
                     spinButton.textContent = 'INICIAR APUESTA';
@@ -341,10 +344,12 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             tablaHistorial.insertBefore(nuevaFila, tablaHistorial.firstChild);
+            
             while (tablaHistorial.children.length > 5) {
                 tablaHistorial.removeChild(tablaHistorial.lastChild);
             }
         }
+
     }
 
     window.limpiarApuestas = function() {
