@@ -1,0 +1,189 @@
+<header class="encabezado-fijo">
+    <nav class="navbar-inicio">
+        <h1 class="logo-text">PrimeBet</h1>
+        <div class="nav-links-inicio">
+            <a href="/Retiro" class="nav-link-item">Realizar retiro</a>
+            <a href="/Deposito" class="nav-link-item">Realizar depósito</a>
+            <a href="/Perfil" class="nav-link-item">Ir al perfil</a>
+            <a href="/logout" class="nav-link-item" style="color: var(--color-danger);">Cerrar Sesión</a>
+        </div>
+    </nav>
+</header>
+
+<div class="contenedor-ruleta-principal">
+    
+<div class="panel-historial-lateral">
+    <p class="balance-status">Dinero disponible: <span id="dinero-disponible">${{saldo}}</span></p>
+    <p class="balance-status" style="margin-bottom: 2rem;">Estado: <span id="estado-apuesta">{{#if estado}}{{estado}}{{else}}Esperando apuesta{{/if}}</span></p>
+    
+    <h3>Historial de Últimas Rondas</h3>
+    
+    {{#if historial}}
+    <div style="overflow-x: auto;">
+        <table class="tabla-historial-final" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="width: 50%;">Apuesta</th>
+                    <th style="width: 25%; text-align: center;">Resultado</th>
+                    <th style="width: 25%; text-align: right;">Ganancia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each historial}}
+                    <tr>
+                        <td class="apuesta-detalle-limpio">
+                           {{this.apuestaDetalle}}
+                        </td>
+                        <td style="text-align: center;">
+                            {{#if this.numeroGanador}}
+                                <span class="resultado-numero color-{{this.colorGanador}}">{{this.numeroGanador}}</span>
+                            {{/if}}
+                        </td>
+                        <td style="text-align: right;">
+                            <span style="font-weight: bold; font-size: 0.9rem; color: {{#if this.positivo}}var(--color-success){{else}}var(--color-danger){{/if}};">
+                                {{this.montoNeto}}
+                            </span>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+        <p class="text-muted" style="text-align: center;">No hay apuestas o resultados recientes.</p>
+    {{/if}}
+</div>
+
+    <div class="tarjeta-pagina-completa tarjeta-juego">
+        <h1>Juego de la ruleta</h1>
+
+        <div class="disposicion-juego-2col">
+
+            <div class="game-col-left">
+                <img src="/Ruleta.webp" alt="Ruleta Europea" class="ruleta-imagen-pequena">
+                <div class="ruleta-indicador"></div>
+            </div>
+            
+            <div class="game-col-center" id="tablero-apuestas">
+    <table id="tapete-ruleta" class="roulette-table">
+        <tbody>
+            <tr>
+                <td rowspan="3" id="n0" class="zero">0</td>
+                <td id="n3" class="red">3</td>
+                <td id="n6" class="black">6</td>
+                <td id="n9" class="red">9</td>
+                <td id="n12" class="red">12</td>
+                <td id="n15" class="black">15</td>
+                <td id="n18" class="red">18</td>
+                <td id="n21" class="red">21</td>
+                <td id="n24" class="black">24</td>
+                <td id="n27" class="red">27</td>
+                <td id="n30" class="red">30</td>
+                <td id="n33" class="black">33</td>
+                <td id="n36" class="red">36</td>
+                <td id="2to1_3" class="twotoone">2 to 1</td>
+            </tr>
+            <tr>
+                <td id="n2" class="black">2</td>
+                <td id="n5" class="red">5</td>
+                <td id="n8" class="black">8</td>
+                <td id="n11" class="black">11</td>
+                <td id="n14" class="red">14</td>
+                <td id="n17" class="black">17</td>
+                <td id="n20" class="black">20</td>
+                <td id="n23" class="red">23</td>
+                <td id="n26" class="black">26</td>
+                <td id="n29" class="black">29</td>
+                <td id="n32" class="red">32</td>
+                <td id="n35" class="black">35</td>
+                <td id="2to1_2" class="twotoone">2 to 1</td>
+            </tr>
+            <tr>
+                <td id="n1" class="red">1</td>
+                <td id="n4" class="black">4</td>
+                <td id="n7" class="red">7</td>
+                <td id="n10" class="black">10</td>
+                <td id="n13" class="black">13</td>
+                <td id="n16" class="red">16</td>
+                <td id="n19" class="red">19</td>
+                <td id="n22" class="black">22</td>
+                <td id="n25" class="red">25</td>
+                <td id="n28" class="black">28</td>
+                <td id="n31" class="black">31</td>
+                <td id="n34" class="red">34</td>
+                <td id="2to1_1" class="twotoone">2 to 1</td>
+            </tr>
+            <tr>
+                <td colspan="1" class="empty-cell"></td>
+                <td colspan="4" id="1st12" class="dozen">1st 12</td>
+                <td colspan="4" id="2nd12" class="dozen">2nd 12</td>
+                <td colspan="4" id="3rd12" class="dozen">3rd 12</td>
+                <td colspan="1" class="empty-cell"></td>
+            </tr>
+            <tr>
+                <td colspan="1" class="empty-cell"></td>
+                <td colspan="2" id="1a18" class="group-bet">1-18</td>
+                <td colspan="2" id="impar" class="group-bet">IMPAR</td>
+                <td colspan="2" id="negro" class="black-bet">NEGRO</td>
+                <td colspan="2" id="rojo" class="red-bet">ROJO</td>
+                <td colspan="2" id="par" class="group-bet">PAR</td>
+                <td colspan="2" id="19a36" class="group-bet">19-36</td>
+                <td colspan="1" class="empty-cell"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+            
+        </div>
+
+
+        <div class="controles-debajo-tablero">
+            <h3 style="color: var(--color-secondary); margin-bottom: 1rem; text-align: center; font-size: 1.3rem;">Selecciona tu ficha</h3>
+            
+            <div id="fichas-container" class="fichas-container-compacto">
+    <div class="ficha-compacta" draggable="true" data-valor="1000" data-tipo="normal">
+        <img src="/ficha_1k.png" alt="Ficha 1k" draggable="false">
+        <span>$1k</span>
+    </div>
+    <div class="ficha-compacta" draggable="true" data-valor="5000" data-tipo="normal">
+        <img src="/ficha_5k.png" alt="Ficha 5k" draggable="false">
+        <span>$5k</span>
+    </div>
+    <div class="ficha-compacta" draggable="true" data-valor="10000" data-tipo="normal">
+        <img src="/ficha_10k.png" alt="Ficha 10k" draggable="false">
+        <span>$10k</span>
+    </div>
+    <div class="ficha-compacta" draggable="true" data-valor="100000" data-tipo="normal">
+        <img src="/ficha_100k.png" alt="Ficha 100k" draggable="false">
+        <span>$100k</span>
+    </div>
+    <div class="ficha-compacta" draggable="true" data-valor="500000" data-tipo="normal">
+        <img src="/ficha_500k.png" alt="Ficha 500k" draggable="false">
+        <span>$500k</span>
+    </div>
+    <div class="ficha-compacta ficha-allin" draggable="true" data-valor="ALLIN" data-tipo="allin">
+        <img src="/ficha_allin.png" alt="All In" draggable="false">
+        <span>ALL IN</span>
+    </div>
+</div>
+
+            <div class="botones-accion">
+                <button class="btn-spin" onclick="iniciarApuesta()"> INICIAR APUESTA</button>
+                <button class="btn btn-outline btn-limpiar-compacto" onclick="limpiarApuestas()">
+                     Limpiar Apuestas
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="/Ruleta.js"></script>
+
+
+
+
+
+
+
+
