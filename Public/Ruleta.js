@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nuevoMonto = dineroActual - valorApuesta;
         actualizarDinero(nuevoMonto); 
         
-        console.log('✅ Apuesta acumulada:', celdaId, 'Total:', apuestasActuales[celdaId].total);
+        console.log('Apuesta acumulada:', celdaId, 'Total:', apuestasActuales[celdaId].total);
         
 
         const fichaVisual = document.createElement('div');
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         celda.appendChild(fichaVisual);
 
-        statusText.textContent = `✅ Apuesta de $${valorApuesta.toLocaleString('es-CL')} registrada (Total: $${apuestasActuales[celdaId].total.toLocaleString('es-CL')})`;
+        statusText.textContent = `Apuesta de $${valorApuesta.toLocaleString('es-CL')} registrada (Total: $${apuestasActuales[celdaId].total.toLocaleString('es-CL')})`;
         statusText.style.color = 'var(--color-success)';
         setTimeout(() => {
             statusText.style.color = '';
@@ -201,9 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
             celda.addEventListener('dragenter', dragEnter);
             celda.addEventListener('drop', drop);
         });
-        console.log(`✅ Eventos de drop agregados a ${todasLasCeldas.length} celdas`);
+        console.log(`Eventos de drop agregados a ${todasLasCeldas.length} celdas`);
     } else {
-        console.error('❌ No se encontró el tapete de ruleta');
+        console.error('No se encontró el tapete de ruleta');
     }
     
     window.iniciarApuesta = async function() {
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return {
                 tipo: info.tipo,      
                 valor: info.valor,    
-                monto: apuestasActuales[celdaId].total // ✅ Usar el total acumulado
+                monto: apuestasActuales[celdaId].total
             };
         });
         
@@ -238,10 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('📥 Respuesta del servidor:', data);
             
             if (!response.ok || !data.success) {
-                statusText.textContent = `❌ Error: ${data.error || 'Desconocido'}`;
+                statusText.textContent = `Error: ${data.error || 'Desconocido'}`;
                 statusText.style.color = 'var(--color-danger)';
                 if (data.saldo) {
-                    actualizarDinero(Number(data.saldo.replace('$', '').replace(/\./g, '').replace(',', '.'))); 
+                    const saldoLimpio = data.saldo.replace('$', '').replace(/\./g, '').replace(',', '.');
+                    actualizarDinero(Number(saldoLimpio)); 
                 }
                 spinButton.disabled = false;
                 spinButton.textContent = 'INICIAR APUESTA';
@@ -266,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(' Rotando ruleta a:', finalRotation, 'grados');
 
             if (!ruletaImg) {
-                console.error('❌ No se encontró la imagen de la ruleta');
+                console.error('No se encontró la imagen de la ruleta');
                 return;
             }
 
@@ -291,8 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 6000); 
             
         } catch (error) {
-            console.error('❌ Error en el proceso de apuesta:', error);
-            statusText.textContent = '❌ Error de conexión con el servidor';
+            console.error('Error en el proceso de apuesta:', error);
+            statusText.textContent = 'Error de conexión con el servidor';
             statusText.style.color = 'var(--color-danger)';
             spinButton.disabled = false;
             spinButton.textContent = 'INICIAR APUESTA';
@@ -301,66 +302,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function actualizarHistorial(data) {
-        // Actualizar dinero
-        if (data.nuevoSaldo !== undefined) {
-            actualizarDinero(data.nuevoSaldo);
+        if (data.saldo !== undefined) {
+            const nuevoSaldoNum = Number(data.saldo.replace('$', '').replace(/\./g, ''));
+            if (!isNaN(nuevoSaldoNum)) {
+                actualizarDinero(nuevoSaldoNum);
+            }
         }
 
-        const tablaResultados = document.querySelector('.tabla-resultados tbody');
-        if (tablaResultados && data.resultado) {
+        const tablaHistorial = document.querySelector('.tabla-historial-final tbody'); 
+        
+        if (tablaHistorial && data.resultado) {
             const colorClass = data.resultado.color === 'rojo' ? 'color-rojo' : 
                               data.resultado.color === 'verde' ? 'color-verde' : 'color-negro';
             
+            const positivo = data.gananciaNeta >= 0;
+            const signo = positivo ? '+' : '';
+            const estado = positivo ? 'GANÓ' : 'PERDIÓ';
+
+            const detalleCompleto = data.detalle;
+            
+            const apuestaDetalle = detalleCompleto.split('|').map(s => {
+                return s.replace(/\s(Gana|Pierde)\s\(\S+\)$/g, '').trim();
+            }).join(' | ');
+
+            const montoNeto = `${estado}: ${signo}$${Math.abs(data.gananciaNeta).toLocaleString('es-CL')}`;
+
             const nuevaFila = document.createElement('tr');
             nuevaFila.innerHTML = `
-                <td>0</td>
-                <td class="resultado-numero ${colorClass}">${data.resultado.numero}</td>
-            `;
-            tablaResultados.insertBefore(nuevaFila, tablaResultados.firstChild);
-            
-
-            while (tablaResultados.children.length > 5) {
-                tablaResultados.removeChild(tablaResultados.lastChild);
-            }
-            
-
-            Array.from(tablaResultados.children).forEach((fila, idx) => {
-                fila.children[0].textContent = idx;
-            });
-        }
-
-
-        const tablaApuestas = document.querySelector('.tabla-apuestas tbody');
-        if (tablaApuestas && data.detalle) {
-            const colorClass = data.gananciaNeta >= 0 ? 'success' : 'danger';
-            const signo = data.gananciaNeta >= 0 ? '+' : '';
-            const estado = data.gananciaNeta >= 0 ? 'GANÓ' : 'PERDIÓ';
-            
-            const nuevaFila = document.createElement('tr');
-            nuevaFila.innerHTML = `
-                <td>0</td>
-                <td class="apuesta-estado ${colorClass}">
-                    ${data.detalle} <strong>(${estado}: ${signo}$${Math.abs(data.gananciaNeta).toLocaleString('es-CL')})</strong>
+                <td class="apuesta-detalle-limpio">${apuestaDetalle}</td>
+                <td style="text-align: center;">
+                    <span class="resultado-numero ${colorClass}">${data.resultado.numero}</span>
+                </td>
+                <td style="text-align: right;">
+                    <span style="font-weight: bold; font-size: 0.9rem; color: var(--color-${positivo ? 'success' : 'danger'});">
+                        ${montoNeto}
+                    </span>
                 </td>
             `;
-            tablaApuestas.insertBefore(nuevaFila, tablaApuestas.firstChild);
-            
-            // Mantener solo 5 apuestas
-            while (tablaApuestas.children.length > 5) {
-                tablaApuestas.removeChild(tablaApuestas.lastChild);
+
+            tablaHistorial.insertBefore(nuevaFila, tablaHistorial.firstChild);
+            while (tablaHistorial.children.length > 5) {
+                tablaHistorial.removeChild(tablaHistorial.lastChild);
             }
-            
-            // Actualizar índices
-            Array.from(tablaApuestas.children).forEach((fila, idx) => {
-                fila.children[0].textContent = idx;
-            });
         }
     }
 
     window.limpiarApuestas = function() {
         let dineroADevolver = 0;
         Object.values(apuestasActuales).forEach(apuesta => {
-            dineroADevolver += apuesta.total; // ✅ Usar el total acumulado
+            dineroADevolver += apuesta.total;
         });
         
         if (dineroADevolver > 0) {
@@ -370,8 +360,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         limpiarApuestasVisuales();
         statusText.textContent = '🗑️ Apuestas limpiadas';
-        console.log('✅ Apuestas limpiadas, dinero devuelto:', dineroADevolver);
+        console.log('Apuestas limpiadas, dinero devuelto:', dineroADevolver);
     }
 
-    console.log('✅ Sistema de ruleta inicializado correctamente');
+    console.log('Sistema de ruleta inicializado correctamente');
 });
