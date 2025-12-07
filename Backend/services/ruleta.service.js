@@ -1,5 +1,5 @@
 function generarNumeroGanador() {
-  const numeroGanador = Math.floor(Math.random() * 37); // 0 a 36
+  const numeroGanador = Math.floor(Math.random() * 37);
   const color = numeroGanador === 0 ? 'verde' : numeroGanador % 2 === 0 ? 'negro' : 'rojo';
   return { numero: numeroGanador, color };
 }
@@ -24,4 +24,6 @@ function calcularGanancia(apuestas, resultado) {
   return { gananciaNeta, detalle };
 }
 
-export { generarNumeroGanador, calcularGanancia };
+// Export CommonJS
+module.exports = { generarNumeroGanador, calcularGanancia };
+
