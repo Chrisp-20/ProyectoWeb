@@ -1,120 +1,118 @@
-// Ruleta.js adaptado al backend modular (POST /api/ruleta/apostar)
-// Ahora soporta múltiples apuestas (arreglo), como tu backend lo exige.
 
-import { useState } from 'react';
+let fichaSeleccionada = null;
+let numeroSeleccionado = null;
+let girando = false;
 
-export default function Ruleta({ onResultado }) {
-  const [fichaSeleccionada, setFichaSeleccionada] = useState(null);
-  const [numeroSeleccionado, setNumeroSeleccionado] = useState(null);
-  const [girando, setGirando] = useState(false);
-  const [resultado, setResultado] = useState(null);
+function seleccionarFicha(valor) {
+  fichaSeleccionada = valor;
 
-  // 🟢 Crear una apuesta válida para el backend
-  const crearApuesta = () => {
-    if (!fichaSeleccionada)
-      return alert("Debes seleccionar una ficha");
-
-    if (numeroSeleccionado === null || numeroSeleccionado === "")
-      return alert("Debes seleccionar un número entre 0 y 36");
-
-    return [
-      {
-        tipo: "numero",
-        valor: numeroSeleccionado,
-        monto: fichaSeleccionada
-      }
-    ];
-  };
-
-  const girarRuleta = async () => {
-    const apuestas = crearApuesta();
-    if (!apuestas) return;
-
-    setGirando(true);
-    setResultado(null);
-
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch("http://localhost:3000/api/ruleta/apostar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ apuestas })
-      });
-
-      const data = await res.json();
-      setResultado(data);
-      onResultado && onResultado(data);
-    } catch (error) {
-      console.error("Error al conectar con backend", error);
-      alert("Error al jugar. Revisa el backend.");
-    }
-
-    setGirando(false);
-  };
-
-  return (
-    <div className="p-4 text-white">
-      <h1 className="text-3xl mb-4">Ruleta</h1>
-
-      {/* Selección de ficha */}
-      <div className="mb-4">
-        <h2 className="text-xl">Selecciona una ficha:</h2>
-        <div className="flex gap-3 mt-2">
-          {[1000, 5000, 10000, 50000, 100000].map((valor) => (
-            <button
-              key={valor}
-              onClick={() => setFichaSeleccionada(valor)}
-              className={`px-4 py-2 rounded-xl border ${fichaSeleccionada === valor ? "bg-blue-600" : "bg-gray-700"}`}
-            >
-              ${valor.toLocaleString("es-CL")} CLP
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Selección de número */}
-      <div className="mb-4">
-        <h2 className="text-xl">Apuesta al número:</h2>
-        <input
-          type="number"
-          min="0"
-          max="36"
-          value={numeroSeleccionado || ""}
-          onChange={(e) => setNumeroSeleccionado(Number(e.target.value))}
-          className="text-black p-2 rounded"
-        />
-      </div>
-
-      {/* Botón girar */}
-      <button
-        onClick={girarRuleta}
-        disabled={girando}
-        className="px-5 py-3 bg-green-600 rounded-xl"
-      >
-        {girando ? "Girando..." : "Girar Ruleta"}
-      </button>
-
-      {/* Resultado */}
-      {resultado && (
-        <div className="mt-6 p-4 bg-gray-800 rounded-xl">
-          <h3 className="text-xl">Resultado:</h3>
-
-          {resultado.success ? (
-            <>
-              <p>Número: {resultado.resultado.numero}</p>
-              <p>Color: {resultado.resultado.color}</p>
-              <p>Ganancia Neta: {resultado.gananciaNeta}</p>
-              <p>Saldo Actualizado: {resultado.saldo}</p>
-            </>
-          ) : (
-            <p className="text-red-400">{resultado.error}</p>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  document.querySelectorAll(".ficha-compacta").forEach(f => f.classList.remove("selected"));
+  const ficha = document.querySelector(`.ficha-compacta[data-valor='${valor}']`);
+  if (ficha) ficha.classList.add("selected");
 }
+
+function seleccionarNumero(valor) {
+  numeroSeleccionado = valor;
+}
+
+function crearApuesta() {
+  if (!fichaSeleccionada) {
+    alert("Debes seleccionar una ficha");
+    return null;
+  }
+  if (numeroSeleccionado === null || numeroSeleccionado === "") {
+    alert("Debes seleccionar un número entre 0 y 36");
+    return null;
+  }
+
+  return [
+    {
+      tipo: "numero",
+      valor: numeroSeleccionado,
+      monto: fichaSeleccionada
+    }
+  ];
+}
+
+
+async function girarRuleta() {
+  const apuestas = crearApuesta();
+  if (!apuestas) return;
+
+  if (girando) return;
+  girando = true;
+
+
+  const resultadoDiv = document.getElementById("resultado-ruleta");
+  if (resultadoDiv) resultadoDiv.innerHTML = "";
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/ruleta/apostar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ apuestas })
+    });
+
+    const data = await res.json();
+    mostrarResultado(data);
+
+  } catch (error) {
+    console.error("Error al conectar con backend", error);
+    alert("Error al jugar. Revisa el backend.");
+  }
+
+  girando = false;
+}
+
+
+function mostrarResultado(data) {
+  const resultadoDiv = document.getElementById("resultado-ruleta");
+  if (!resultadoDiv) return;
+
+  if (data.success) {
+    resultadoDiv.innerHTML = `
+      <p>Número: ${data.resultado.numero}</p>
+      <p>Color: ${data.resultado.color}</p>
+      <p>Ganancia Neta: ${data.gananciaNeta}</p>
+      <p>Saldo Actualizado: ${data.saldo}</p>
+    `;
+  } else {
+    resultadoDiv.innerHTML = `<p style="color: red;">${data.error}</p>`;
+  }
+}
+
+function limpiarApuestas() {
+  fichaSeleccionada = null;
+  numeroSeleccionado = null;
+  document.querySelectorAll(".ficha-compacta").forEach(f => f.classList.remove("selected"));
+  const inputNumero = document.getElementById("numero-apuesta");
+  if (inputNumero) inputNumero.value = "";
+  const resultadoDiv = document.getElementById("resultado-ruleta");
+  if (resultadoDiv) resultadoDiv.innerHTML = "";
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+ 
+  document.querySelectorAll(".ficha-compacta").forEach(btn => {
+    btn.addEventListener("click", () => seleccionarFicha(Number(btn.dataset.valor)));
+  });
+
+
+  const inputNumero = document.getElementById("numero-apuesta");
+  if (inputNumero) {
+    inputNumero.addEventListener("input", (e) => seleccionarNumero(Number(e.target.value)));
+  }
+
+ 
+  const btnGirar = document.getElementById("btn-girar");
+  if (btnGirar) btnGirar.addEventListener("click", girarRuleta);
+
+  
+  const btnLimpiar = document.getElementById("btn-limpiar");
+  if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarApuestas);
+});
