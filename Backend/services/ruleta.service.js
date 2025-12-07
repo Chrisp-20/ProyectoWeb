@@ -21,9 +21,12 @@ function calcularGanancia(apuestas, resultado) {
     }
   });
 
-  return { gananciaNeta, detalle };
+  return { gananciaNeta, detalle, resultado };
 }
 
-// Export CommonJS
-module.exports = { generarNumeroGanador, calcularGanancia };
+function calcularResultado(apuestas) {
+  const resultado = generarNumeroGanador();
+  return calcularGanancia(apuestas, resultado);
+}
 
+module.exports = { generarNumeroGanador, calcularGanancia, calcularResultado };
