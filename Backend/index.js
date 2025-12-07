@@ -17,17 +17,19 @@ mongoose.connect("mongodb+srv://userweb:Us3rweb_@cluster00.zfjs1ub.mongodb.net/?
   .then(() => console.log("MongoDB conectado"))
   .catch(err => console.log("Error Mongo:", err));
 
+
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ruleta", ruletaRoutes);
 
 
-app.use(express.static(path.join(__dirname, "../public"))); 
+app.use(express.static(path.join(__dirname, "../public")));
 
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/Ruleta.html")); 
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/Ruleta.html"));
 });
+
 
 app.listen(3000, () => {
   console.log("Backend API corriendo en el puerto 3000");

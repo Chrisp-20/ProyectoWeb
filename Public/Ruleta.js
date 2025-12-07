@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            console.log('📥 Respuesta del servidor:', data);
+            console.log(' Respuesta del servidor:', data);
             
             if (!response.ok || !data.success) {
                 statusText.textContent = `Error: ${data.error || 'Desconocido'}`;
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         limpiarApuestasVisuales();
-        statusText.textContent = '🗑️ Apuestas limpiadas';
+        statusText.textContent = 'Apuestas limpiadas';
         console.log('Apuestas limpiadas, dinero devuelto:', dineroADevolver);
     }
 
