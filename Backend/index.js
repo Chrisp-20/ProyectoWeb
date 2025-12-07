@@ -18,19 +18,12 @@ mongoose.connect("mongodb+srv://userweb:Us3rweb_@cluster00.zfjs1ub.mongodb.net/?
   .then(() => console.log("MongoDB conectado"))
   .catch(err => console.log("Error Mongo:", err));
 
-const exphbs = require("express-handlebars");
-
 app.engine("handlebars", exphbs.engine({
     defaultLayout: "main",
     layoutsDir: path.join(__dirname, "../Frontend/layouts")
 }));
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "../Frontend"));
-
-
-
-
-
 
 app.use(express.static(path.join(__dirname, "../Public")));
 
