@@ -23,11 +23,11 @@ app.use("/api/user", userRoutes);
 app.use("/api/ruleta", ruletaRoutes);
 
 
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../Public")));
 
 
 app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/Ruleta.js"));
+  res.sendFile(path.join(__dirname, "../Public/Ruleta.js"));
 });
 
 

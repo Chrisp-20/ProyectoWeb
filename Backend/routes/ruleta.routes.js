@@ -1,5 +1,5 @@
 const express = require("express");
-const authMiddleware = require("../middleware/auth.middleware.js"); // import directo de la función
+const authMiddleware = require("../middleware/auth.middleware.js"); 
 const { jugarRuleta } = require("../controllers/ruleta.controller.js");
 
 const router = express.Router();
