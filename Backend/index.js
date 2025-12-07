@@ -20,7 +20,7 @@ mongoose.connect("mongodb+srv://userweb:Us3rweb_@cluster00.zfjs1ub.mongodb.net/?
 
 app.engine("handlebars", exphbs.engine({
     defaultLayout: "main",
-    layoutsDir: path.join(__dirname, "../Frontend/layouts")
+    layoutsDir: path.join(__dirname, "../Frontend/Layouts")
 }));
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "../Frontend"));
