@@ -31,16 +31,16 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ruleta", ruletaRoutes);
 
-app.get("/", (req, res) => res.render("Inicio"));
-app.get("/login", (req, res) => res.render("Login"));
-app.get("/registro", (req, res) => res.render("Registro"));
-app.get("/perfil", (req, res) => res.render("Perfil"));
-app.get("/ruleta", (req, res) => res.render("Ruleta"));
-app.get("/deposito", (req, res) => res.render("Deposito"));
-app.get("/retiro", (req, res) => res.render("Retiro"));
-app.get("/info", (req, res) => res.render("Info"));
-app.get("/info_ruleta", (req, res) => res.render("Info_ruleta"));
-app.get("/recuperarc", (req, res) => res.render("Recuperarc"));
+app.get("/Inicio", (req, res) => res.render("Inicio"));
+app.get("/Login", (req, res) => res.render("Login"));
+app.get("/Registro", (req, res) => res.render("Registro"));
+app.get("/Perfil", (req, res) => res.render("Perfil"));
+app.get("/Ruleta", (req, res) => res.render("Ruleta"));
+app.get("/Deposito", (req, res) => res.render("Deposito"));
+app.get("/Retiro", (req, res) => res.render("Retiro"));
+app.get("/Info", (req, res) => res.render("Info"));
+app.get("/Info_ruleta", (req, res) => res.render("Info_ruleta"));
+app.get("/Recuperarc", (req, res) => res.render("Recuperarc"));
 
 app.use((req, res) => {
   res.status(404).render("404", { mensaje: "Página no encontrada" });
