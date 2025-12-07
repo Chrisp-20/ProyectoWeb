@@ -1,9 +1,10 @@
-import express from "express";
-import cors from "cors";
-import mongoose from "mongoose";
-import authRoutes from "./routes/auth.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import ruletaRoutes from "./routes/ruleta.routes.js";
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const authRoutes = require("./routes/auth.routes.js");
+const userRoutes = require("./routes/user.routes.js");
+const ruletaRoutes = require("./routes/ruleta.routes.js");
 
 const app = express();
 
@@ -17,7 +18,6 @@ mongoose.connect("mongodb+srv://userweb:Us3rweb_@cluster00.zfjs1ub.mongodb.net/?
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ruleta", ruletaRoutes);
-
 
 app.listen(3000, () => {
   console.log("Backend API corriendo en el puerto 3000");

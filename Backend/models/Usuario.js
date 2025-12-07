@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const UsuarioSchema = new mongoose.Schema({
   nombre: String,
@@ -8,4 +8,4 @@ const UsuarioSchema = new mongoose.Schema({
   historial: { type: Array, default: [] }
 });
 
-export default mongoose.model("Usuario", UsuarioSchema);
+module.exports = mongoose.model("Usuario", UsuarioSchema);

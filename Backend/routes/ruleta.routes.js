@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { jugarRuleta } from '../controllers/ruleta.controller.js';
-import authMiddleware from '../middleware/auth.middleware.js';
+const express = require("express");
+const { jugarRuleta } = require("../controllers/ruleta.controller.js");
+const authMiddleware = require("../middleware/auth.middleware.js");
 
-const router = Router();
+const router = express.Router();
 
-router.post('/apostar', authMiddleware, jugarRuleta);
+router.post("/apostar", authMiddleware, jugarRuleta);
 
-export default router;
+module.exports = router;

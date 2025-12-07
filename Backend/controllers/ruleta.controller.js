@@ -1,7 +1,7 @@
-import { calcularResultado } from '../services/ruleta.service.js';
-import Usuario from '../models/Usuario.js';
+const { calcularResultado } = require('../services/ruleta.service.js');
+const Usuario = require('../models/Usuario.js');
 
-export const jugarRuleta = async (req, res) => {
+exports.jugarRuleta = async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.usuario._id);
         if (!usuario) return res.json({ success: false, error: 'Usuario no encontrado' });
@@ -14,6 +14,7 @@ export const jugarRuleta = async (req, res) => {
             return res.json({ success: false, error: 'Saldo insuficiente', saldo: usuario.saldo });
 
         const resultado = calcularResultado(apuestas);
+
         usuario.saldo += resultado.gananciaNeta;
         await usuario.save();
 

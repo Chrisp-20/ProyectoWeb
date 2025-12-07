@@ -1,5 +1,7 @@
-import jwt from 'jsonwebtoken';
+const jwt = require("jsonwebtoken");
 
-export const crearToken = (id) => {
-    return jwt.sign({ id }, 'SECRETO_SUPER_DURO', { expiresIn: '7d' });
+const crearToken = (id) => {
+    return jwt.sign({ id }, 'Palabra secreta', { expiresIn: '7d' });
 };
+
+module.exports = { crearToken };

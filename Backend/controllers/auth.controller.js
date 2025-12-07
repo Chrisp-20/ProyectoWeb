@@ -1,8 +1,8 @@
-import Usuario from "../models/Usuario.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+const Usuario = require("../models/Usuario.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-export const registro = async (req, res) => {
+exports.registro = async (req, res) => {
   try {
     const { nombre, correo, contraseña } = req.body;
 
@@ -11,7 +11,7 @@ export const registro = async (req, res) => {
 
     const hash = await bcrypt.hash(contraseña, 10);
 
-    const user = await Usuario.create({
+    await Usuario.create({
       nombre,
       correo,
       contraseña: hash,
@@ -24,7 +24,7 @@ export const registro = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const { correo, contraseña } = req.body;
 

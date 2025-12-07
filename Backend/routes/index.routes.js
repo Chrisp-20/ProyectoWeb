@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import authRoutes from './auth.routes.js';
-import userRoutes from './user.routes.js';
-import ruletaRoutes from './ruleta.routes.js';
+const express = require("express");
+const authRoutes = require("./auth.routes.js");
+const userRoutes = require("./user.routes.js");
+const ruletaRoutes = require("./ruleta.routes.js");
 
-const router = Router();
+const router = express.Router();
 
-router.use('/auth', authRoutes);
-router.use('/usuario', userRoutes);
-router.use('/ruleta', ruletaRoutes);
+router.use("/auth", authRoutes);
+router.use("/usuario", userRoutes);
+router.use("/ruleta", ruletaRoutes);
 
-export default router;
+module.exports = router;
