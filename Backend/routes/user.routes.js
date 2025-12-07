@@ -4,6 +4,6 @@ const { verifyToken } = require("../middleware/auth.middleware.js");
 
 const router = express.Router();
 
-router.get("/perfil", verifyToken, getPerfil);
+const usuario = await Usuario.findById(req.userId);
 
 module.exports = router;
