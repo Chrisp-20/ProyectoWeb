@@ -1,17 +1,13 @@
-
 document.addEventListener('DOMContentLoaded', async () => {
-  
   if (!protegerRuta()) {
     return;
   }
 
-  
   await cargarDatosPerfil();
 });
 
 async function cargarDatosPerfil() {
   try {
-    
     const perfil = await obtenerPerfil();
     
     if (!perfil) {
@@ -19,7 +15,7 @@ async function cargarDatosPerfil() {
       return;
     }
 
-    
+
     document.querySelector('h1').textContent = `Bienvenido, ${perfil.nombre}`;
     
     const infoList = document.querySelector('.profile-info ul');
@@ -32,15 +28,14 @@ async function cargarDatosPerfil() {
       `;
     }
 
-    
     const historial = await obtenerHistorial();
     
     if (historial && historial.length > 0) {
-      
+   
       const transacciones = historial.filter(h => h.tipo === 'deposito' || h.tipo === 'retiro');
       const apuestas = historial.filter(h => h.tipo === 'apuesta' || h.tipo === 'ganancia');
       
-      
+  
       actualizarTablaTransacciones(transacciones);
       
       
@@ -97,7 +92,7 @@ function actualizarTablaApuestas(apuestas) {
     const signo = positivo ? '+' : '-';
     const color = positivo ? 'var(--color-success)' : 'var(--color-danger)';
     
-    
+  
     let descripcion = a.descripcion || a.tipo;
     if (descripcion.startsWith('Ruleta - ')) {
       descripcion = descripcion.substring(9);
