@@ -2,40 +2,76 @@ const Usuario = require("../models/Usuario.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// ------------------------
+// REGISTER
+// ------------------------
 exports.registro = async (req, res) => {
   try {
-    const { nombre, correo, password } = req.body;
+    let { nombre, correo, password } = req.body;
 
     if (!nombre || !correo || !password)
       return res.status(400).json({ msg: "Faltan datos" });
 
+    // Normalizar correo
+    correo = correo.toLowerCase();
+
+    // Validación de formato básico
+    const correoRegex = /\S+@\S+\.\S+/;
+    if (!correoRegex.test(correo))
+      return res.status(400).json({ msg: "Correo inválido" });
+
+    // Revisar si existe
     const existe = await Usuario.findOne({ correo });
-    if (existe) return res.status(400).json({ msg: "Correo ya registrado" });
+    if (existe)
+      return res.status(400).json({ msg: "Correo ya registrado" });
 
     const hash = await bcrypt.hash(password, 10);
 
-    await Usuario.create({
+    const nuevo = await Usuario.create({
       nombre,
       correo,
       password: hash,
       saldo: 0,
     });
 
-    res.json({ msg: "Usuario registrado" });
+    return res.status(201).json({
+      msg: "Usuario registrado",
+      user: {
+        id: nuevo._id,
+        nombre: nuevo.nombre,
+        correo: nuevo.correo,
+      }
+    });
+
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("Error en registro:", e);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
+
+// ------------------------
+// LOGIN
+// ------------------------
 exports.login = async (req, res) => {
   try {
-    const { correo, password } = req.body;
+    let { correo, password } = req.body;
+
+    if (!correo || !password)
+      return res.status(400).json({ msg: "Faltan datos" });
+
+    correo = correo.toLowerCase();
 
     const user = await Usuario.findOne({ correo });
-    if (!user) return res.status(404).json({ msg: "Usuario no existe" });
+    if (!user)
+      return res.status(400).json({ msg: "Credenciales inválidas" });
 
     const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(400).json({ msg: "Contraseña incorrecta" });
+    if (!ok)
+      return res.status(400).json({ msg: "Credenciales inválidas" });
+
+    if (!process.env.JWT_SECRET)
+      return res.status(500).json({ msg: "Error en servidor: falta JWT_SECRET" });
 
     const token = jwt.sign(
       { id: user._id },
@@ -43,7 +79,7 @@ exports.login = async (req, res) => {
       { expiresIn: "2h" }
     );
 
-    res.json({
+    return res.json({
       msg: "Login exitoso",
       token,
       user: {
@@ -53,7 +89,9 @@ exports.login = async (req, res) => {
         saldo: user.saldo,
       },
     });
+
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.error("Error en login:", e);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

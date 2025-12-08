@@ -2,6 +2,9 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+require('dotenv').config();
+console.log("MONGODB_URI desde .env:", process.env.MONGODB_URI);
+
 const mongoose = require("mongoose");
 const path = require("path");
 const exphbs = require("express-handlebars");

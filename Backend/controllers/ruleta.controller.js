@@ -3,7 +3,7 @@ const Usuario = require('../models/Usuario.js');
 
 async function jugarRuleta(req, res) {
     try {
-        const usuario = await Usuario.findById(req.usuario._id);
+        const usuario = await Usuario.findById(req.userId); 
         if (!usuario) return res.json({ success: false, error: 'Usuario no encontrado' });
 
         const { apuestas } = req.body;
@@ -15,13 +15,23 @@ async function jugarRuleta(req, res) {
         const resultado = calcularResultado(apuestas);
 
         usuario.saldo += resultado.gananciaNeta;
+
+        // GUARDAR HISTORIAL
+        usuario.historial.push({
+            fecha: new Date(),
+            apuestas,
+            numeroGanador: resultado.resultado.numero,
+            colorGanador: resultado.resultado.color,
+            gananciaNeta: resultado.gananciaNeta
+        });
+
         await usuario.save();
 
         return res.json({
             success: true,
             resultado: resultado.resultado,
             gananciaNeta: resultado.gananciaNeta,
-            saldo: `$${usuario.saldo.toLocaleString('es-CL')}`,
+            saldo: usuario.saldo,
             detalle: resultado.detalle
         });
 
