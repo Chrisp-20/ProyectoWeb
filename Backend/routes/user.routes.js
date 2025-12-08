@@ -1,10 +1,29 @@
 const express = require("express");
-const { getPerfil } = require("../controllers/user.controller.js");
+const { 
+  getPerfil, 
+  depositar, 
+  retirar, 
+  getHistorial,
+  getSaldo 
+} = require("../controllers/user.controller.js");
 const authMiddleware = require("../middleware/auth.middleware.js");
 
 const router = express.Router();
 
-// Obtener perfil del usuario autenticado
-router.get("/perfil", authMiddleware, getPerfil);
+// Todas las rutas requieren autenticación
+router.use(authMiddleware);
+
+// Perfil
+router.get("/perfil", getPerfil);
+
+// Saldo
+router.get("/saldo", getSaldo);
+
+// Transacciones
+router.post("/depositar", depositar);
+router.post("/retirar", retirar);
+
+// Historial
+router.get("/historial", getHistorial);
 
 module.exports = router;

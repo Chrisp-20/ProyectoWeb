@@ -1,10 +1,6 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
-require('dotenv').config();
-console.log("MONGODB_URI desde .env:", process.env.MONGODB_URI);
-
 const mongoose = require("mongoose");
 const path = require("path");
 const exphbs = require("express-handlebars");
@@ -46,7 +42,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ruleta", ruletaRoutes);
 
-// Rutas del frontend
+// Rutas del frontend (vistas públicas y privadas)
+app.get("/", (req, res) => res.redirect("/Inicio"));
 app.get("/Inicio", (req, res) => res.render("Inicio"));
 app.get("/Login", (req, res) => res.render("Login"));
 app.get("/Registro", (req, res) => res.render("Registro"));
@@ -58,13 +55,23 @@ app.get("/Info", (req, res) => res.render("Info"));
 app.get("/Info_ruleta", (req, res) => res.render("Info_ruleta"));
 app.get("/Recuperarc", (req, res) => res.render("Recuperarc"));
 
+// Ruta de logout (redirige al frontend para limpiar token)
+app.get("/logout", (req, res) => {
+  res.send(`
+    <script>
+      localStorage.removeItem('token');
+      window.location.href = '/Inicio';
+    </script>
+  `);
+});
+
 // 404
 app.use((req, res) => {
   res.status(404).render("404", { mensaje: "Página no encontrada" });
 });
 
 // Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 80;
 app.listen(PORT, () => {
   console.log(`Backend API corriendo en el puerto ${PORT}`);
 });
