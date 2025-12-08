@@ -1,10 +1,7 @@
 const { calcularResultado } = require('../services/ruleta.service.js');
 const Usuario = require('../models/Usuario.js');
 
-/**
- * Procesa una apuesta de ruleta
- * Requiere autenticación (req.userId debe estar presente)
- */
+
 async function jugarRuleta(req, res) {
   try {
     // 1. Verificar usuario autenticado

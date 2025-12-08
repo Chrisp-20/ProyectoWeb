@@ -1,8 +1,6 @@
 const Usuario = require("../models/Usuario.js");
 
-// ------------------------
-// OBTENER PERFIL
-// ------------------------
+
 exports.getPerfil = async (req, res) => {
   try {
     if (!req.userId) {
@@ -21,14 +19,11 @@ exports.getPerfil = async (req, res) => {
   }
 };
 
-// ------------------------
-// DEPOSITAR SALDO
-// ------------------------
+
 exports.depositar = async (req, res) => {
   try {
     const { monto } = req.body;
 
-    // Validaciones
     if (!monto || isNaN(monto) || monto <= 0) {
       return res.status(400).json({ error: "Monto inválido" });
     }
@@ -42,10 +37,8 @@ exports.depositar = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    // Actualizar saldo
     user.saldo += parseFloat(monto);
     
-    // Agregar al historial
     user.historial.push({
       tipo: "deposito",
       monto: parseFloat(monto),
@@ -67,9 +60,6 @@ exports.depositar = async (req, res) => {
   }
 };
 
-// ------------------------
-// RETIRAR SALDO
-// ------------------------
 exports.retirar = async (req, res) => {
   try {
     const { monto } = req.body;
@@ -84,7 +74,6 @@ exports.retirar = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    // Verificar saldo suficiente
     if (user.saldo < monto) {
       return res.status(400).json({ 
         error: "Saldo insuficiente",
@@ -92,10 +81,9 @@ exports.retirar = async (req, res) => {
       });
     }
 
-    // Actualizar saldo
     user.saldo -= parseFloat(monto);
     
-    // Agregar al historial
+   
     user.historial.push({
       tipo: "retiro",
       monto: parseFloat(monto),
@@ -117,9 +105,7 @@ exports.retirar = async (req, res) => {
   }
 };
 
-// ------------------------
-// OBTENER HISTORIAL
-// ------------------------
+
 exports.getHistorial = async (req, res) => {
   try {
     const user = await Usuario.findById(req.userId).select("historial");
@@ -127,7 +113,7 @@ exports.getHistorial = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
-    // Ordenar por fecha descendente (más reciente primero)
+   
     const historialOrdenado = user.historial.sort((a, b) => 
       new Date(b.fecha) - new Date(a.fecha)
     );
@@ -143,9 +129,7 @@ exports.getHistorial = async (req, res) => {
   }
 };
 
-// ------------------------
-// OBTENER SALDO ACTUAL
-// ------------------------
+
 exports.getSaldo = async (req, res) => {
   try {
     const user = await Usuario.findById(req.userId).select("saldo");

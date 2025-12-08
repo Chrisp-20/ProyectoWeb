@@ -1,10 +1,9 @@
+require('dotenv').config();
 const Usuario = require("../models/Usuario.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// ------------------------
-// REGISTER
-// ------------------------
+//Registro
 exports.registro = async (req, res) => {
   try {
     let { nombre, correo, password } = req.body;
@@ -12,15 +11,12 @@ exports.registro = async (req, res) => {
     if (!nombre || !correo || !password)
       return res.status(400).json({ msg: "Faltan datos" });
 
-    // Normalizar correo
     correo = correo.toLowerCase();
 
-    // Validación de formato básico
     const correoRegex = /\S+@\S+\.\S+/;
     if (!correoRegex.test(correo))
       return res.status(400).json({ msg: "Correo inválido" });
 
-    // Revisar si existe
     const existe = await Usuario.findOne({ correo });
     if (existe)
       return res.status(400).json({ msg: "Correo ya registrado" });
@@ -50,9 +46,7 @@ exports.registro = async (req, res) => {
 };
 
 
-// ------------------------
-// LOGIN
-// ------------------------
+//Login
 exports.login = async (req, res) => {
   try {
     let { correo, password } = req.body;
