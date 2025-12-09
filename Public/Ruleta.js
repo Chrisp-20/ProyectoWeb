@@ -1,11 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // Proteger la ruta - redirigir si no está autenticado
     if (!protegerRuta()) {
         return;
     }
-
-    // Cargar saldo inicial desde el backend
     await cargarSaldoInicial();
     
     const ruletaImg = document.querySelector('.ruleta-imagen-pequena');
@@ -240,7 +237,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusText.textContent = 'Giro en curso...';
 
         try {
-            // CAMBIO CRÍTICO: Usar la función apostarRuleta con JWT
             const data = await apostarRuleta(apuestasParaEnviar);
             
             console.log('Respuesta del servidor:', data);
@@ -295,14 +291,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             spinButton.disabled = false;
             spinButton.textContent = 'INICIAR APUESTA';
             
-            // Recargar saldo desde el servidor en caso de error
             await cargarSaldoInicial();
             limpiarApuestasVisuales();
         }
     }
 
     function actualizarHistorial(data) {
-        // Actualizar saldo con el valor del servidor
         if (data.saldo !== undefined) {
             actualizarDinero(data.saldo);
         }

@@ -1,14 +1,8 @@
-// ============================================
-// MANEJO DE DEPÓSITOS Y RETIROS
-// ============================================
-
 document.addEventListener('DOMContentLoaded', async () => {
-  // Proteger la ruta
   if (!protegerRuta()) {
     return;
   }
 
-  // Cargar saldo actual
   await cargarSaldoActual();
 });
 
@@ -46,13 +40,10 @@ async function procesarDeposito(event) {
     
     mostrarExito(`¡Depósito exitoso! Nuevo saldo: $${resultado.nuevoSaldo.toLocaleString('es-CL')}`);
     
-    // Actualizar saldo en pantalla
     await cargarSaldoActual();
     
-    // Limpiar formulario
     form.reset();
     
-    // Redirigir después de 2 segundos
     setTimeout(() => {
       window.location.href = '/Perfil';
     }, 2000);
@@ -79,13 +70,10 @@ async function procesarRetiro(event) {
     
     mostrarExito(`¡Retiro exitoso! Nuevo saldo: $${resultado.nuevoSaldo.toLocaleString('es-CL')}`);
     
-    // Actualizar saldo en pantalla
     await cargarSaldoActual();
-    
-    // Limpiar formulario
+
     form.reset();
-    
-    // Redirigir después de 2 segundos
+   
     setTimeout(() => {
       window.location.href = '/Perfil';
     }, 2000);

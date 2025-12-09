@@ -4,7 +4,6 @@ const Usuario = require('../models/Usuario.js');
 
 async function jugarRuleta(req, res) {
   try {
-    // 1. Verificar usuario autenticado
     const usuario = await Usuario.findById(req.userId);
     if (!usuario) {
       return res.status(404).json({ 
@@ -13,7 +12,6 @@ async function jugarRuleta(req, res) {
       });
     }
 
-    // 2. Validar apuestas
     const { apuestas } = req.body;
 
     if (!apuestas || !Array.isArray(apuestas) || apuestas.length === 0) {
@@ -23,7 +21,6 @@ async function jugarRuleta(req, res) {
       });
     }
 
-    // Validar estructura de cada apuesta
     for (const apuesta of apuestas) {
       if (!apuesta.tipo || apuesta.valor === undefined || !apuesta.monto) {
         return res.status(400).json({ 
@@ -40,10 +37,8 @@ async function jugarRuleta(req, res) {
       }
     }
 
-    // 3. Calcular total apostado
     const totalApostado = apuestas.reduce((acc, a) => acc + a.monto, 0);
 
-    // 4. Verificar saldo suficiente
     if (usuario.saldo < totalApostado) {
       return res.status(400).json({ 
         success: false, 
@@ -53,13 +48,10 @@ async function jugarRuleta(req, res) {
       });
     }
 
-    // 5. Calcular resultado usando el servicio de ruleta
     const resultado = calcularResultado(apuestas);
 
-    // 6. Actualizar saldo del usuario
     usuario.saldo += resultado.gananciaNeta;
 
-    // 7. Agregar al historial
     usuario.historial.push({
       tipo: resultado.gananciaNeta >= 0 ? 'ganancia' : 'apuesta',
       monto: Math.abs(resultado.gananciaNeta),
@@ -67,10 +59,8 @@ async function jugarRuleta(req, res) {
       fecha: new Date()
     });
 
-    // 8. Guardar cambios en BD
     await usuario.save();
 
-    // 9. Responder al cliente
     return res.json({
       success: true,
       resultado: resultado.resultado,

@@ -58,21 +58,17 @@ const UsuarioSchema = new mongoose.Schema(
   }
 );
 
-// Middleware para encriptar password antes de guardar
 UsuarioSchema.pre("save", async function () {
-  // Solo encriptar si el password fue modificado
   if (!this.isModified("password")) return;
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Método para comparar passwords
 UsuarioSchema.methods.compararPassword = async function (passwordIngresado) {
   return await bcrypt.compare(passwordIngresado, this.password);
 };
 
-// Método para agregar al historial
 UsuarioSchema.methods.agregarHistorial = function (tipo, monto, descripcion) {
   this.historial.push({
     tipo,

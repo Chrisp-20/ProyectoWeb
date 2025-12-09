@@ -1,38 +1,23 @@
-// ============================================
-// SISTEMA DE AUTENTICACIÓN JWT
-// ============================================
 
-/**
- * Guarda el token JWT en localStorage
- */
 function guardarToken(token) {
   localStorage.setItem('token', token);
 }
 
-/**
- * Obtiene el token JWT de localStorage
- */
+
 function obtenerToken() {
   return localStorage.getItem('token');
 }
 
-/**
- * Elimina el token JWT (logout)
- */
+
 function eliminarToken() {
   localStorage.removeItem('token');
 }
 
-/**
- * Verifica si el usuario está autenticado
- */
 function estaAutenticado() {
   return !!obtenerToken();
 }
 
-/**
- * Redirige a login si no está autenticado
- */
+
 function protegerRuta() {
   if (!estaAutenticado()) {
     window.location.href = '/Login';
@@ -41,9 +26,6 @@ function protegerRuta() {
   return true;
 }
 
-/**
- * Maneja el registro de usuario
- */
 async function registrarUsuario(event) {
   event.preventDefault();
   
@@ -57,7 +39,7 @@ async function registrarUsuario(event) {
   const password = formData.get('password');
   const repassword = formData.get('repassword');
   
-  // Validaciones básicas
+
   if (password !== repassword) {
     mostrarError('Las contraseñas no coinciden');
     return;
@@ -94,9 +76,7 @@ async function registrarUsuario(event) {
   }
 }
 
-/**
- * Maneja el inicio de sesión
- */
+
 async function iniciarSesion(event) {
   event.preventDefault();
   
@@ -138,17 +118,11 @@ async function iniciarSesion(event) {
   }
 }
 
-/**
- * Cierra la sesión del usuario
- */
 function cerrarSesion() {
   eliminarToken();
   window.location.href = '/Inicio';
 }
 
-/**
- * Obtiene los datos del perfil del usuario
- */
 async function obtenerPerfil() {
   try {
     const response = await fetch('/api/user/perfil', {
@@ -175,9 +149,7 @@ async function obtenerPerfil() {
   }
 }
 
-/**
- * Muestra un mensaje de error
- */
+
 function mostrarError(mensaje) {
   const alertDiv = document.createElement('div');
   alertDiv.className = 'alert alert-danger';
@@ -203,9 +175,7 @@ function mostrarError(mensaje) {
   }, 4000);
 }
 
-/**
- * Muestra un mensaje de éxito
- */
+
 function mostrarExito(mensaje) {
   const alertDiv = document.createElement('div');
   alertDiv.className = 'alert alert-success';
@@ -231,7 +201,7 @@ function mostrarExito(mensaje) {
   }, 4000);
 }
 
-// Agregar animaciones CSS
+
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn {

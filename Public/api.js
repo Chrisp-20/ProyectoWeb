@@ -1,10 +1,3 @@
-// ============================================
-// API CLIENT - Peticiones autenticadas
-// ============================================
-
-/**
- * Realiza una petición autenticada al backend
- */
 async function peticionAutenticada(url, options = {}) {
   const token = obtenerToken();
   
@@ -25,7 +18,6 @@ async function peticionAutenticada(url, options = {}) {
       headers
     });
     
-    // Si el token expiró o es inválido
     if (response.status === 401) {
       eliminarToken();
       window.location.href = '/Login';
@@ -40,9 +32,6 @@ async function peticionAutenticada(url, options = {}) {
   }
 }
 
-/**
- * Obtiene el saldo actual del usuario
- */
 async function obtenerSaldo() {
   try {
     const response = await peticionAutenticada('/api/user/saldo');
@@ -60,9 +49,7 @@ async function obtenerSaldo() {
   }
 }
 
-/**
- * Realiza un depósito
- */
+
 async function realizarDeposito(monto) {
   try {
     const response = await peticionAutenticada('/api/user/depositar', {
@@ -84,9 +71,7 @@ async function realizarDeposito(monto) {
   }
 }
 
-/**
- * Realiza un retiro
- */
+
 async function realizarRetiro(monto) {
   try {
     const response = await peticionAutenticada('/api/user/retirar', {
@@ -108,9 +93,7 @@ async function realizarRetiro(monto) {
   }
 }
 
-/**
- * Obtiene el historial de transacciones
- */
+
 async function obtenerHistorial() {
   try {
     const response = await peticionAutenticada('/api/user/historial');
@@ -128,9 +111,7 @@ async function obtenerHistorial() {
   }
 }
 
-/**
- * Realiza una apuesta en la ruleta
- */
+
 async function apostarRuleta(apuestas) {
   try {
     const response = await peticionAutenticada('/api/ruleta/apostar', {

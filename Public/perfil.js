@@ -1,20 +1,12 @@
-// ============================================
-// CARGA DE DATOS DEL PERFIL
-// ============================================
-
 document.addEventListener('DOMContentLoaded', async () => {
-  // Proteger la ruta
   if (!protegerRuta()) {
     return;
   }
-
-  // Cargar datos del perfil
   await cargarDatosPerfil();
 });
 
 async function cargarDatosPerfil() {
   try {
-    // Obtener perfil del usuario
     const perfil = await obtenerPerfil();
     
     if (!perfil) {
@@ -22,7 +14,6 @@ async function cargarDatosPerfil() {
       return;
     }
 
-    // Actualizar información básica
     document.querySelector('h1').textContent = `Bienvenido, ${perfil.nombre}`;
     
     const infoList = document.querySelector('.profile-info ul');
@@ -39,18 +30,14 @@ async function cargarDatosPerfil() {
       `;
     }
 
-    // Cargar historial
+   
     const historial = await obtenerHistorial();
     
     if (historial && historial.length > 0) {
-      // Separar transacciones monetarias (depósito/retiro) de apuestas
       const transacciones = historial.filter(h => h.tipo === 'deposito' || h.tipo === 'retiro');
       const apuestas = historial.filter(h => h.tipo === 'apuesta' || h.tipo === 'ganancia');
       
-      // Actualizar tabla de transacciones
       actualizarTablaTransacciones(transacciones);
-      
-      // Actualizar tabla de apuestas
       actualizarTablaApuestas(apuestas);
     }
 
@@ -104,11 +91,9 @@ function actualizarTablaApuestas(apuestas) {
     const signo = positivo ? '+' : '-';
     const color = positivo ? 'var(--color-success)' : 'var(--color-danger)';
     
-    // Limpiar descripción (quitar el prefijo "Ruleta - ")
     let descripcion = a.descripcion || a.tipo;
     if (descripcion.startsWith('Ruleta - ')) {
       descripcion = descripcion.substring(9);
-      // Acortar si es muy largo
       if (descripcion.length > 50) {
         descripcion = descripcion.substring(0, 47) + '...';
       }
