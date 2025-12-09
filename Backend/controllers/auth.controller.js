@@ -21,15 +21,14 @@ exports.registro = async (req, res) => {
     if (existe)
       return res.status(400).json({ msg: "Correo ya registrado" });
 
-    const hash = await bcrypt.hash(password, 10);
-
+        
     const nuevo = await Usuario.create({
       nombre,
       rut: rut || null,
       usuario: usuario || null,
       correo,
       fechaNacimiento: fechaNacimiento || null,
-      password: hash,
+      password: password, 
       saldo: 0,
     });
 
@@ -48,7 +47,7 @@ exports.registro = async (req, res) => {
   }
 };
 
-// LOGIN (CON LOGS DE DEBUG)
+// LOGIN 
 exports.login = async (req, res) => {
   try {
     let { correo, password } = req.body;
