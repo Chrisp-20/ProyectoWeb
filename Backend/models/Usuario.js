@@ -8,6 +8,14 @@ const UsuarioSchema = new mongoose.Schema(
       required: [true, "El nombre es obligatorio"],
       trim: true,
     },
+    rut: {
+      type: String,
+      trim: true,
+    },
+    usuario: {
+      type: String,
+      trim: true,
+    },
     correo: {
       type: String,
       required: [true, "El correo es obligatorio"],
@@ -16,11 +24,14 @@ const UsuarioSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Correo electrónico inválido"],
     },
+    fechaNacimiento: {
+      type: Date,
+    },
     password: {
       type: String,
       required: [true, "La contraseña es obligatoria"],
       minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
-      select: false, // No devolver password por defecto en queries
+      select: false,
     },
     saldo: {
       type: Number,
@@ -43,22 +54,17 @@ const UsuarioSchema = new mongoose.Schema(
     ],
   },
   {
-    timestamps: true, // Agrega createdAt y updatedAt automáticamente
+    timestamps: true,
   }
 );
 
 // Middleware para encriptar password antes de guardar
-UsuarioSchema.pre("save", async function (next) {
+UsuarioSchema.pre("save", async function () {
   // Solo encriptar si el password fue modificado
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return;
 
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Método para comparar passwords
