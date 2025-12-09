@@ -1,6 +1,4 @@
-// ============================================
-// RULETA EUROPEA - LÓGICA DE NEGOCIO
-// ============================================
+
 
 // Números rojos en ruleta europea
 const ROJOS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
@@ -9,17 +7,17 @@ const ROJOS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36
 const NEGROS = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
 
 /**
- * Genera un número aleatorio de la ruleta europea (0-36)
- * @returns {number} Número ganador
+ * 
+ * @returns {number} 
  */
 function generarNumeroGanador() {
-  return Math.floor(Math.random() * 37); // 0 a 36
+  return Math.floor(Math.random() * 37); 
 }
 
 /**
- * Determina el color de un número
+ * 
  * @param {number} numero 
- * @returns {string} 'verde', 'rojo' o 'negro'
+ * @returns {string} 
  */
 function obtenerColor(numero) {
   if (numero === 0) return 'verde';
@@ -29,7 +27,7 @@ function obtenerColor(numero) {
 }
 
 /**
- * Verifica si un número es par (excluyendo el 0)
+ * 
  * @param {number} numero 
  * @returns {boolean}
  */
@@ -39,9 +37,9 @@ function esPar(numero) {
 }
 
 /**
- * Determina en qué docena cae el número (1-12, 13-24, 25-36)
+ * 
  * @param {number} numero 
- * @returns {number|null} 1, 2, 3 o null si es 0
+ * @returns {number|null} 
  */
 function obtenerDocena(numero) {
   if (numero === 0) return null;
@@ -52,24 +50,24 @@ function obtenerDocena(numero) {
 }
 
 /**
- * Determina en qué columna cae el número
+ * 
  * @param {number} numero 
- * @returns {number|null} 1, 2, 3 o null si es 0
+ * @returns {number|null} 
  */
 function obtenerColumna(numero) {
   if (numero === 0) return null;
-  if (numero % 3 === 1) return 1; // 1, 4, 7, 10, ...
-  if (numero % 3 === 2) return 2; // 2, 5, 8, 11, ...
-  if (numero % 3 === 0) return 3; // 3, 6, 9, 12, ...
+  if (numero % 3 === 1) return 1; 
+  if (numero % 3 === 2) return 2; 
+  if (numero % 3 === 0) return 3; 
   return null;
 }
 
 /**
- * Calcula si una apuesta individual ganó y cuánto paga
- * @param {object} apuesta - { tipo, valor, monto }
+ * 
+ * @param {object} apuesta 
  * @param {number} numeroGanador 
  * @param {string} colorGanador 
- * @returns {object} { gana: boolean, pago: number, multiplicador: number }
+ * @returns {object} 
  */
 function evaluarApuesta(apuesta, numeroGanador, colorGanador) {
   const { tipo, valor, monto } = apuesta;
@@ -78,17 +76,17 @@ function evaluarApuesta(apuesta, numeroGanador, colorGanador) {
   let multiplicador = 0;
 
   switch (tipo) {
-    case 'numero': // Pleno (35:1)
+    case 'numero': 
       gana = valor === numeroGanador;
       multiplicador = gana ? 35 : 0;
       break;
 
-    case 'color': // Rojo/Negro (1:1)
+    case 'color': 
       gana = valor === colorGanador && numeroGanador !== 0;
       multiplicador = gana ? 1 : 0;
       break;
 
-    case 'paridad': // Par/Impar (1:1)
+    case 'paridad': 
       if (numeroGanador === 0) {
         gana = false;
       } else if (valor === 'par') {
@@ -99,7 +97,7 @@ function evaluarApuesta(apuesta, numeroGanador, colorGanador) {
       multiplicador = gana ? 1 : 0;
       break;
 
-    case 'grupo': // 1-18 / 19-36 (1:1)
+    case 'grupo': 
       if (numeroGanador === 0) {
         gana = false;
       } else if (valor === 'bajo') {
@@ -110,12 +108,12 @@ function evaluarApuesta(apuesta, numeroGanador, colorGanador) {
       multiplicador = gana ? 1 : 0;
       break;
 
-    case 'docena': // 1st/2nd/3rd 12 (2:1)
+    case 'docena': 
       gana = obtenerDocena(numeroGanador) === valor;
       multiplicador = gana ? 2 : 0;
       break;
 
-    case 'columna': // 2 to 1 (2:1)
+    case 'columna': 
       gana = obtenerColumna(numeroGanador) === valor;
       multiplicador = gana ? 2 : 0;
       break;
@@ -126,26 +124,26 @@ function evaluarApuesta(apuesta, numeroGanador, colorGanador) {
       multiplicador = 0;
   }
 
-  // Calcular pago total
-  const pago = gana ? monto * multiplicador : 0;
+  
+  const pago = gana ? monto + (monto * multiplicador) : 0;
   
   return { gana, pago, multiplicador };
 }
 
 /**
- * Procesa todas las apuestas y calcula el resultado final
- * @param {array} apuestas - Array de { tipo, valor, monto }
- * @returns {object} Resultado completo con número ganador, ganancias y detalle
+ * 
+ * @param {array} apuestas 
+ * @returns {object} 
  */
 function calcularResultado(apuestas) {
-  // 1. Generar número ganador
+  
   const numeroGanador = generarNumeroGanador();
   const colorGanador = obtenerColor(numeroGanador);
 
-  // 2. Calcular total apostado
+
   const totalApostado = apuestas.reduce((sum, a) => sum + a.monto, 0);
 
-  // 3. Evaluar cada apuesta
+
   let totalGanado = 0;
   const detalles = [];
 
@@ -154,7 +152,7 @@ function calcularResultado(apuestas) {
     
     totalGanado += resultado.pago;
 
-    // Crear descripción legible
+   
     let descripcion = '';
     switch (apuesta.tipo) {
       case 'numero':
@@ -186,10 +184,9 @@ function calcularResultado(apuestas) {
     detalles.push(`${descripcion}: $${apuesta.monto} → ${estado}`);
   });
 
-  // 4. Calcular ganancia neta
+ 
   const gananciaNeta = totalGanado - totalApostado;
 
-  // 5. Retornar resultado completo
   return {
     resultado: {
       numero: numeroGanador,
