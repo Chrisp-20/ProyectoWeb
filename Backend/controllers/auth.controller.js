@@ -56,7 +56,8 @@ exports.login = async (req, res) => {
 
     correo = correo.toLowerCase();
 
-    const user = await Usuario.findOne({ correo });
+    
+    const user = await Usuario.findOne({ correo }).select("+password");
     if (!user)
       return res.status(400).json({ msg: "Credenciales inválidas" });
 
