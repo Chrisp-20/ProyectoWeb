@@ -21,7 +21,6 @@ exports.registro = async (req, res) => {
     if (existe)
       return res.status(400).json({ msg: "Correo ya registrado" });
 
-        
     const nuevo = await Usuario.create({
       nombre,
       rut: rut || null,
@@ -52,9 +51,6 @@ exports.login = async (req, res) => {
   try {
     let { correo, password } = req.body;
 
-    console.log("🔍 Login attempt - correo:", correo);
-    console.log("🔍 Login attempt - password recibido:", password ? "SÍ" : "NO");
-
     if (!correo || !password)
       return res.status(400).json({ msg: "Faltan datos" });
 
@@ -62,18 +58,10 @@ exports.login = async (req, res) => {
 
     const user = await Usuario.findOne({ correo }).select("+password");
     
-    console.log("👤 Usuario encontrado:", user ? "SÍ" : "NO");
-    
     if (!user)
       return res.status(400).json({ msg: "Credenciales inválidas" });
 
-    console.log("🔐 Password en BD existe:", !!user.password);
-    console.log("🔐 Password length en BD:", user.password?.length);
-    console.log("🔐 Password recibido length:", password.length);
-
     const ok = await bcrypt.compare(password, user.password);
-    
-    console.log("✅ Comparación bcrypt resultado:", ok);
 
     if (!ok)
       return res.status(400).json({ msg: "Credenciales inválidas" });
