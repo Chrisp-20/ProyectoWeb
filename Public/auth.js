@@ -51,7 +51,9 @@ async function registrarUsuario(event) {
   const formData = new FormData(form);
   
   const nombre = formData.get('nombre');
+  const usuario = formData.get('usuario') || null;
   const correo = formData.get('email');
+  const fechaNacimiento = formData.get('birthdate') || null;
   const password = formData.get('password');
   const repassword = formData.get('repassword');
   
@@ -72,7 +74,7 @@ async function registrarUsuario(event) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ nombre, correo, password })
+      body: JSON.stringify({ nombre, usuario, correo, fechaNacimiento, password })
     });
     
     const data = await response.json();
