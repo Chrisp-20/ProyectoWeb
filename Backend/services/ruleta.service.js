@@ -177,7 +177,7 @@ function calcularResultado(apuestas) {
       `Gana (+${resultado.pago})` : 
       `Pierde (-${apuesta.monto})`;
 
-    detalles.push(`${descripcion}: $${apuesta.monto} → ${estado}`);
+    detalles.push(`${descripcion}: $${apuesta.monto}  ${estado}`);
   });
 
  
