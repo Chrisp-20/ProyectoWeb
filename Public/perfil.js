@@ -37,7 +37,6 @@ async function cargarDatosPerfil() {
         <li>Miembro desde: <strong>${fechaMiembro}</strong></li>
       `;
     }
-
    
     const historial = await obtenerHistorial();
     

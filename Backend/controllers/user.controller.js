@@ -64,7 +64,6 @@ exports.retirar = async (req, res) => {
   try {
     const { monto } = req.body;
 
-    // Validaciones
     if (!monto || isNaN(monto) || monto <= 0) {
       return res.status(400).json({ error: "Monto inválido" });
     }

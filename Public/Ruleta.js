@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             let descripcion = apuesta.descripcion || '';
             descripcion = descripcion.replace(/^Ruleta - Número \d+ \(\w+\)\. /, '');
-            descripcion = descripcion.split(':').map(s => s.split('→')[0].trim()).join(' | ');
+            descripcion = descripcion.split(':').map(s => s.trim()).join(' | ');
             
             if (descripcion.length > 50) {
                 descripcion = descripcion.substring(0, 47) + '...';

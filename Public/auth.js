@@ -84,7 +84,7 @@ async function iniciarSesion(event) {
   const form = event.target;
   const formData = new FormData(form);
   
-  const correo = formData.get('email') || formData.get('rut'); // Acepta email o rut
+  const correo = formData.get('email') || formData.get('rut'); 
   const password = formData.get('password');
   
   if (!correo || !password) {
