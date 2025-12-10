@@ -28,8 +28,8 @@ exports.depositar = async (req, res) => {
       return res.status(400).json({ error: "Monto inválido" });
     }
 
-    if (monto > 10000) {
-      return res.status(400).json({ error: "El monto máximo por depósito es $10,000" });
+    if (monto > 1000000) {
+      return res.status(400).json({ error: "El monto máximo por depósito es $1.000.000" });
     }
 
     const user = await Usuario.findById(req.userId);
