@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!protegerRuta()) {
         return;
     }
-    await cargarSaldoInicial();
+    await cargarSaldoInicial();   
+    await cargarHistorialRuleta();
     
     const ruletaImg = document.querySelector('.ruleta-imagen-pequena');
     const spinButton = document.querySelector('.btn-spin');
@@ -355,6 +356,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusText.textContent = 'Apuestas limpiadas';
         console.log('Apuestas limpiadas, dinero devuelto:', dineroADevolver);
     }
+    async function cargarHistorialRuleta() {
+    try {
+        const historial = await obtenerHistorial();
+        
+        if (!historial || historial.length === 0) return;
+        
+        const apuestasRuleta = historial
+            .filter(h => h.tipo === 'apuesta' || h.tipo === 'ganancia')
+            .slice(0, 5); 
+        
+        const tablaHistorial = document.querySelector('.tabla-historial-final tbody');
+        
+        if (!tablaHistorial || apuestasRuleta.length === 0) return;
+        
+        tablaHistorial.innerHTML = '';
+        
+        apuestasRuleta.forEach(apuesta => {
+            const positivo = apuesta.tipo === 'ganancia';
+            const signo = positivo ? '+' : '';
+            const estado = positivo ? 'GANÓ' : 'PERDIÓ';
+            
+            const match = apuesta.descripcion.match(/Número (\d+) \((\w+)\)/);
+            const numeroGanador = match ? match[1] : '?';
+            const colorGanador = match ? match[2] : 'negro';
+            
+            const colorClass = colorGanador === 'rojo' ? 'color-rojo' : 
+                              colorGanador === 'verde' ? 'color-verde' : 'color-negro';
+            
+            let descripcion = apuesta.descripcion || '';
+            descripcion = descripcion.replace(/^Ruleta - Número \d+ \(\w+\)\. /, '');
+            descripcion = descripcion.split(':').map(s => s.split('→')[0].trim()).join(' | ');
+            
+            if (descripcion.length > 50) {
+                descripcion = descripcion.substring(0, 47) + '...';
+            }
+            
+            const montoNeto = `${estado}: ${signo}$${Math.abs(apuesta.monto).toLocaleString('es-CL')}`;
+            
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td class="apuesta-detalle-limpio">${descripcion}</td>
+                <td style="text-align: center;">
+                    <span class="resultado-numero ${colorClass}">${numeroGanador}</span>
+                </td>
+                <td style="text-align: right;">
+                    <span style="font-weight: bold; font-size: 0.9rem; color: var(--color-${positivo ? 'success' : 'danger'});">
+                        ${montoNeto}
+                    </span>
+                </td>
+            `;
+            
+            tablaHistorial.appendChild(nuevaFila);
+        });
+        
+    } catch (error) {
+        console.error('Error al cargar historial:', error);
+    }
+}
 
     console.log('Sistema de ruleta inicializado correctamente');
 });
