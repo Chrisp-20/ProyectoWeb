@@ -30,8 +30,8 @@ async function procesarDeposito(event) {
     return;
   }
   
-  if (monto > 10000) {
-    mostrarError('El monto máximo por depósito es $10,000');
+  if (monto > 1000000) {
+    mostrarError('El monto máximo por depósito es $1.000.000');
     return;
   }
   
