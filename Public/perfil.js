@@ -21,10 +21,18 @@ async function cargarDatosPerfil() {
       const fechaMiembro = perfil.createdAt 
         ? new Date(perfil.createdAt).toLocaleDateString('es-CL')
         : 'N/A';
+    const fechaNacimiento = perfil.fechaNacimiento
+        ? new Date(perfil.fechaNacimiento).toLocaleDateString('es-CL')
+        : 'No especificada';
+
+    const usuario = perfil.usuario || perfil.nombre;
+    const rut = perfil.rut || 'No especificado';
       
       infoList.innerHTML = `
         <li>Nombre: <strong>${perfil.nombre}</strong></li>
+        <li>RUT: <strong>${rut}</strong></li> 
         <li>Email: <strong>${perfil.correo}</strong></li>
+        <li>Fecha de Nacimiento: <strong>${fechaNacimiento}</strong></li>
         <li>Saldo Disponible: <strong>${perfil.saldo.toLocaleString('es-CL')}</strong></li>
         <li>Miembro desde: <strong>${fechaMiembro}</strong></li>
       `;
